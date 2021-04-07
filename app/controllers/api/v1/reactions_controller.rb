@@ -1,35 +1,14 @@
 module Api
   module V1
     class ReactionsController < ApplicationController
-      before_action :set_reaction, only: [:show, :update, :destroy]
-
-      # GET /reactions
-      def index
-        @reactions = Reaction.all
-
-        render json: @reactions
-      end
-
-      # GET /reactions/1
-      def show
-        render json: @reaction
-      end
+      before_action :set_reaction, only: [:destroy]
 
       # POST /reactions
       def create
         @reaction = Reaction.new(reaction_params)
 
         if @reaction.save
-          render json: @reaction, status: :created, location: @reaction
-        else
-          render json: @reaction.errors, status: :unprocessable_entity
-        end
-      end
-
-      # PATCH/PUT /reactions/1
-      def update
-        if @reaction.update(reaction_params)
-          render json: @reaction
+          render json: ReactionSerializer.new(@reaction), status: :created
         else
           render json: @reaction.errors, status: :unprocessable_entity
         end
@@ -48,7 +27,7 @@ module Api
 
       # Only allow a list of trusted parameters through.
       def reaction_params
-        params.require(:reaction).permit(:id, :post_id, :type)
+        params.require(:reaction).permit(:post_id, :type)
       end
     end
   end
