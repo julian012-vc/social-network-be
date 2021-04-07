@@ -5,4 +5,6 @@ class CommentSerializer
   attributes :title
   attributes :content
   attributes :email
+  attributes :created_at
+  attributes :post_id
 end

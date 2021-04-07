@@ -1,7 +1,7 @@
 module Api
   module V1
     class PostsController < ApplicationController
-      before_action :set_post, only: [:show, :update, :destroy]
+      before_action :set_post, only: [:show]
 
       # GET /posts
       def index
@@ -10,10 +10,8 @@ module Api
         total_pages = (posts.count/params[:per_page].to_f).ceil
         has_next = params[:page].to_i < total_pages
 
-        @options ||= {include: %i[comments]}
-
         render json: {
-          result: PostSerializer.new(result, @options),
+          result: PostSerializer.new(result),
           total_records: posts.count,
           total_pages: total_pages,
           page: params[:page].to_i,
@@ -24,7 +22,7 @@ module Api
 
       # GET /posts/1
       def show
-        render json: @post
+        render json: PostSerializer.new(@post, options)
       end
 
       # POST /posts
@@ -32,24 +30,10 @@ module Api
         @post = Post.new(post_params)
 
         if @post.save
-          render json: @post, status: :created, location: @post
+          render json: PostSerializer.new(@post), status: :created
         else
           render json: @post.errors, status: :unprocessable_entity
         end
-      end
-
-      # PATCH/PUT /posts/1
-      def update
-        if @post.update(post_params)
-          render json: @post
-        else
-          render json: @post.errors, status: :unprocessable_entity
-        end
-      end
-
-      # DELETE /posts/1
-      def destroy
-        @post.destroy
       end
 
       private
@@ -58,9 +42,13 @@ module Api
         @post = Post.find(params[:id])
       end
 
+      def options
+        @options ||= { include: %i[comments] }
+      end
+
       # Only allow a list of trusted parameters through.
       def post_params
-        params.require(:post).permit(:id, :title, :content, :email, :parent_id)
+        params.require(:post).permit(:title, :content, :email, :post_id)
       end
     end
   end
