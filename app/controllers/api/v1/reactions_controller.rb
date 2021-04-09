@@ -27,7 +27,7 @@ module Api
 
       # Only allow a list of trusted parameters through.
       def reaction_params
-        params.require(:reaction).permit(:post_id, :type)
+        params.require(:reaction).permit(:post_id, :type_reaction)
       end
     end
   end
