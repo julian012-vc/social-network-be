@@ -3,7 +3,6 @@ module Api
     class ReactionsController < ApplicationController
       before_action :set_reaction, only: [:destroy]
 
-      # POST /reactions
       def create
         @reaction = Reaction.new(reaction_params)
 
@@ -14,7 +13,6 @@ module Api
         end
       end
 
-      # DELETE /reactions/1
       def destroy
         @reaction.destroy
       end
